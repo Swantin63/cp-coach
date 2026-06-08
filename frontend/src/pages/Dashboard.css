@@ -1,0 +1,165 @@
+.dashboard {
+
+    min-height: 100vh;
+
+    background: #080808;
+
+    color: white;
+
+    padding: 40px;
+}
+
+.dashboard-title {
+
+    font-size: 3rem;
+
+    margin-bottom: 30px;
+}
+
+.search-box {
+
+    display: flex;
+
+    gap: 15px;
+
+    margin-bottom: 40px;
+}
+
+.search-box input {
+
+    flex: 1;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    border: 1px solid #222;
+
+    background: #111;
+
+    color: white;
+}
+
+.search-box button {
+
+    padding: 15px 25px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #6674ff;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+.stats-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(300px, 1fr));
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+.card {
+
+    background: rgba(17,17,17,0.8);
+
+    border: 1px solid #222;
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    backdrop-filter: blur(10px);
+
+    transition: 0.3s;
+}
+
+.card:hover {
+
+    transform: translateY(-5px);
+
+    border-color: #6674ff;
+}
+
+.card h2 {
+
+    margin-top: 0;
+}
+
+.card ul {
+
+    padding-left: 20px;
+}
+
+.card li {
+
+    margin-bottom: 10px;
+}
+
+.big-score {
+
+    font-size: 3rem;
+
+    font-weight: bold;
+
+    color: #6674ff;
+}
+
+.recommendation-card {
+
+    margin-top: 20px;
+}
+
+.recommendation-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+
+    gap: 15px;
+
+    margin-top: 20px;
+}
+
+.problem-card {
+
+    background: #111;
+
+    border: 1px solid #222;
+
+    border-radius: 15px;
+
+    padding: 15px;
+}
+
+.problem-card:hover {
+
+    border-color: #6674ff;
+}
+
+@media (max-width: 768px) {
+
+    .dashboard {
+
+        padding: 20px;
+    }
+
+    .search-box {
+
+        flex-direction: column;
+    }
+
+    .dashboard-title {
+
+        font-size: 2rem;
+    }
+}
