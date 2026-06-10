@@ -7,7 +7,7 @@ require("../services/contestService");
 const fetchPlacementScore = async (req, res) => {
 
     try {
-
+        console.time("Placement");
         const handle = req.params.handle;
 
         // Contest Data

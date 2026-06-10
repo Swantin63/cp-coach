@@ -15,7 +15,7 @@ import { BsLightbulb } from "react-icons/bs";
 import "./Dashboard.css";
 
 function Dashboard() {
-
+    const [loading,setLoading] = useState(false);
     const [handle, setHandle] = useState("");
     const [profile, setProfile] = useState(null);
     const [placementScore, setPlacementScore] = useState(null);
@@ -29,9 +29,21 @@ function Dashboard() {
     const fetchProfile = async () => {
 
         try {
+            setLoading(true);
+            const [
+                    profileResponse,
+                    scoreResponse,
+                    weakTopicResponse,
+                    strongTopicResponse,
+                    recommendationResponse
+                ] = await Promise.all([
 
-            const profileResponse =
-                await API.get(`/profile/${handle}`);
+                    API.get(`/profile/${handle}`),
+                    API.get(`/placement-score/${handle}`),
+                    API.get(`/weak-topic/${handle}`),
+                    API.get(`/strong-topic/${handle}`),
+                    API.get(`/recommendation/${handle}`)
+                ]);            
 
             if (profileResponse.data.result) {
 
@@ -47,37 +59,26 @@ function Dashboard() {
 
             }
 
-            const scoreResponse =
-                await API.get(`/placement-score/${handle}`);
+        setPlacementScore(
+            scoreResponse.data
+        );
 
-            setPlacementScore(
-                scoreResponse.data
-            );
+        setWeakTopics(
+            weakTopicResponse.data.weakTopics
+        );
 
-            const weakTopicResponse =
-                await API.get(`/weak-topic/${handle}`);
+        setStrongTopics(
+            strongTopicResponse.data.strongTopics
+        );
 
-            setWeakTopics(
-                weakTopicResponse.data.weakTopics
-            );
+        setWeakestTopic(
+            recommendationResponse.data.weakestTopic
+        );
 
-            const strongTopicResponse =
-                await API.get(`/strong-topic/${handle}`);
+        setRecommendations(
+            recommendationResponse.data.recommendations
+        );    
 
-            setStrongTopics(
-                strongTopicResponse.data.strongTopics
-            );
-
-            const recommendationResponse =
-                await API.get(`/recommendation/${handle}`);
-
-            setWeakestTopic(
-                recommendationResponse.data.weakestTopic
-            );
-
-            setRecommendations(
-                recommendationResponse.data.recommendations
-            );
 
         }
 
@@ -87,6 +88,9 @@ function Dashboard() {
 
             alert("Error fetching data");
 
+        }
+        finally{
+            setLoading(false)
         }
 
     };
@@ -127,356 +131,402 @@ function Dashboard() {
 
                 <button
                     onClick={fetchProfile}
+                    disabled={loading}
                 >
-                    Analyze
+                    {loading ? "Analyzing..." : "Analyze"}
                 </button>
 
             </div>
-            {/* SUMMERY SECTION*/}
-            {profile && (
-             <div className="summary-grid">
-                <div className="summary-card">
-                    <FaTrophy className="summary-icon"/>
-                    <p>Contest Rating</p>                    
-                    <h2>{profile.rating}</h2>                    
-                    <span>
-                        Max: {profile.maxRating}
-                    </span>
-                </div>
+            {/* SUMMARY SECTION */}
 
-                <div className="summary-card">
-                    <FaGlobe className="summary-icon"/>
-                    <p>Global Rank</p>
-                    <h2>{profile.rank}</h2>
-                </div>
-                <div className="summary-card">
-                    <FaFlag className="summary-icon"/>
-                    <p>Country</p>
-                    <h2>{profile.country}</h2>
-                </div>
+            <div className="summary-grid">
 
-                <div className="summary-card">
-                <FaStar className="summary-icon"/>   
-                <p>Contribution</p>
-                <h2>{profile.contribution}</h2>
-                </div>
-             </div>   
-            )}
-            <div>
+                {
+                    loading ? (
+                        <>
+                            <div className="skeleton-card"></div>
+                            <div className="skeleton-card"></div>
+                            <div className="skeleton-card"></div>
+                            <div className="skeleton-card"></div>
+                        </>
+                    ) : (
+                        profile && (
+                            <>
+                                <div className="summary-card">
+                                    <FaTrophy className="summary-icon"/>
+                                    <p>Contest Rating</p>
+                                    <h2>{profile.rating}</h2>
+                                    <span>
+                                        Max: {profile.maxRating}
+                                    </span>
+                                </div>
+
+                                <div className="summary-card">
+                                    <FaGlobe className="summary-icon"/>
+                                    <p>Global Rank</p>
+                                    <h2>{profile.rank}</h2>
+                                </div>
+
+                                <div className="summary-card">
+                                    <FaFlag className="summary-icon"/>
+                                    <p>Country</p>
+                                    <h2>{profile.country}</h2>
+                                </div>
+
+                                <div className="summary-card">
+                                    <FaStar className="summary-icon"/>
+                                    <p>Contribution</p>
+                                    <h2>{profile.contribution}</h2>
+                                </div>
+                            </>
+                        )
+                    )
+                }
 
             </div>
             {/* TOP GRID */}
 
             <div className="stats-grid">
+            {
+                loading ? (
+                    <div className="card skeleton-large-card skeleton-profile"></div>
+                ):(
 
-                {profile && (
+                    profile && (
 
-                    <div className="card profile-card">
-                        <h2 className="card-title">
-                            <FaUser></FaUser>
-                             Profile Overview
-                        </h2>
+                        <div className="card profile-card">
+                            <h2 className="card-title">
+                                <FaUser></FaUser>
+                                Profile Overview
+                            </h2>
 
-                        <div className="profile-row">
-                            <span>Handle</span>
-                            <strong>
-                                {profile.handle}
-                            </strong>
+                            <div className="profile-row">
+                                <span>Handle</span>
+                                <strong>
+                                    {profile.handle}
+                                </strong>
+                            </div>
+
+                            <div className="profile-row">
+                                <span>Rating</span>
+                                <strong>
+                                    {profile.rating}
+                                </strong>
+                            </div>
+
+                            <div className="profile-row">
+                                <span>Max Rating</span>
+                                <strong>
+                                    {profile.maxRating}
+                                </strong>
+                            </div>
+
+                            <div className="profile-row">
+                                <span>Rank</span>
+                                <strong>
+                                    {profile.rank}
+                                </strong>
+                            </div>
+
+                            <div className="profile-row">
+                                <span>Country</span>
+                                <strong>
+                                    {profile.country}
+                                </strong>
+                            </div>
+
                         </div>
+                    )
+                    )
+                }
+                {
+                    loading ? (
+                        <div className="card skeleton-large-card skeleton-placement"></div>
+                    ):(    
+                        placementScore && (
 
-                        <div className="profile-row">
-                            <span>Rating</span>
-                            <strong>
-                                {profile.rating}
-                            </strong>
-                        </div>
+                            <div className="card">
 
-                        <div className="profile-row">
-                            <span>Max Rating</span>
-                            <strong>
-                                {profile.maxRating}
-                            </strong>
-                        </div>
+                                <h2 className="card-title">
+                                    <FiTarget/>
+                                    Placement Score
+                                </h2>
+                                <div className="score-layout">
 
-                        <div className="profile-row">
-                            <span>Rank</span>
-                            <strong>
-                                {profile.rank}
-                            </strong>
-                        </div>
+                                    <div className="score-left">
 
-                        <div className="profile-row">
-                            <span>Country</span>
-                            <strong>
-                                {profile.country}
-                            </strong>
-                        </div>
-
-                    </div>
-
-                )}
-
-                {placementScore && (
-
-                    <div className="card">
-
-                        <h2 className="card-title">
-                            <FiTarget/>
-                             Placement Score
-                        </h2>
-                        <div className="score-layout">
-
-                            <div className="score-left">
-
-                                <div
-                                    className="score-circle"
-                                    style={{
-                                        background: `conic-gradient(
-                                            #4dd0e1 0deg,
-                                            #4dd0e1 ${placementScore.score * 3.6}deg,
-                                            #222 ${placementScore.score * 3.6}deg,
-                                            #222 360deg
-                                        )`
-                                    }}
-                                >
-                                    <div className="score-inner">
-                                        <div>
-                                            <div className="score-value">
-                                                {placementScore.score}
-                                            </div>
-                                            <div className="score-max">
-                                                /100
+                                        <div
+                                            className="score-circle"
+                                            style={{
+                                                background: `conic-gradient(
+                                                    #4dd0e1 0deg,
+                                                    #4dd0e1 ${placementScore.score * 3.6}deg,
+                                                    #222 ${placementScore.score * 3.6}deg,
+                                                    #222 360deg
+                                                )`
+                                            }}
+                                        >
+                                            <div className="score-inner">
+                                                <div>
+                                                    <div className="score-value">
+                                                        {placementScore.score}
+                                                    </div>
+                                                    <div className="score-max">
+                                                        /100
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div className="score-badge">
+                                            <FaStar/> 
+                                            {placementScore.level}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="score-badge">
-                                    <FaStar/> 
-                                    {placementScore.level}
-                                </div>
+                                    <div className="score-details">
+                                        <div className="metric-card">
+                                            <div className="metric-left">
+                                                <FaTrophy/>
+                                                <span>Contests</span>
+                                                <strong>{placementScore.contests}</strong>
+                                            </div>
+                                            
+                                        </div>
+                                        <div className="metric-card">
+                                            <div className="metric-left">
+                                                <FaBook/>
+                                                <span>Problems Solved</span>
+                                                <strong>{placementScore.problemsSolved}</strong>
+                                            </div>
+                                        </div>
+                                            
+                                        <div className="metric-card">
+                                            <div className="metric-left">
+                                                <FaBullseye/>
+                                                <span>Topic Coverage</span>
+                                                <strong>{placementScore.topicCoverage}</strong>
+                                            </div>
+                                        </div>
+                                            
+                                    </div>
+                                </div>               
                             </div>
-                            <div className="score-details">
-                                <div className="metric-card">
-                                    <div className="metric-left">
-                                        <FaTrophy/>
-                                        <span>Contests</span>
-                                        <strong>{placementScore.contests}</strong>
-                                    </div>
-                                    
-                                </div>
-                                <div className="metric-card">
-                                    <div className="metric-left">
-                                        <FaBook/>
-                                        <span>Problems Solved</span>
-                                        <strong>{placementScore.problemsSolved}</strong>
-                                    </div>
-                                </div>
-                                    
-                                <div className="metric-card">
-                                    <div className="metric-left">
-                                        <FaBullseye/>
-                                        <span>Topic Coverage</span>
-                                        <strong>{placementScore.topicCoverage}</strong>
-                                    </div>
-                                </div>
-                                    
-                            </div>
-                        </div>               
-                    </div>
-                )}
+                        )
+                        )
+                    }
             </div>
 
             {/* SECOND GRID */}
 
             <div className="stats-grid">
+                {
+                    loading ? (
 
-                {weakTopics.length > 0 && (
+                        <div className="card skeleton-large-card skeleton-topics"></div>
 
-                    <div className="card">
+                    ) : (
+                                weakTopics.length > 0 && (
 
-                        <h2 className="card-title">
-                            <MdOutlineWarningAmber className="weak-icon"/>
-                             Weak Topics
-                        </h2>
+                                    <div className="card">
 
-                        {
+                                        <h2 className="card-title">
+                                            <MdOutlineWarningAmber className="weak-icon"/>
+                                            Weak Topics
+                                        </h2>
 
-                            weakTopics.map(
-                                (
-                                    topic,
-                                    index
-                                ) => (
+                                        {
 
-                                    <div
-                                        className="topic-bar-card"
-                                        key={index}
-                                    >
-                                        <div className="topic-header">
-                                            <span>
-                                                {topic.topic}
-                                            </span>
-                                            <strong>
-                                                {topic.percentage}%
-                                            </strong>
+                                            weakTopics.map(
+                                                (
+                                                    topic,
+                                                    index
+                                                ) => (
 
-                                        </div>
-                                        <div className="progress-bar">
-                                            <div 
-                                                className="weak-fill"
-                                                style={{
-                                                    width:
-                                                    `${topic.percentage}%`
-                                                }}    
-                                            >
-                                            </div>
-                                        </div>
-                                    </div>               
-                                )
+                                                    <div
+                                                        className="topic-bar-card"
+                                                        key={index}
+                                                    >
+                                                        <div className="topic-header">
+                                                            <span>
+                                                                {topic.topic}
+                                                            </span>
+                                                            <strong>
+                                                                {topic.percentage}%
+                                                            </strong>
+
+                                                        </div>
+                                                        <div className="progress-bar">
+                                                            <div 
+                                                                className="weak-fill"
+                                                                style={{
+                                                                    width:
+                                                                    `${topic.percentage}%`
+                                                                }}    
+                                                            >
+                                                            </div>
+                                                        </div>
+                                                    </div>               
+                                                )
+                                            )
+                                        }
+
+                                </div>
+
                             )
+                        )
                         }
+                {
+                    loading ? (
 
-                    </div>
+                        <div className="card skeleton-large-card skeleton-topics"></div>
 
-                )}
+                    ) : (
+                                strongTopics.length > 0 && (
 
-                {strongTopics.length > 0 && (
+                                    <div className="card">
 
-                    <div className="card">
+                                        <h2 className="card-title">
+                                            <GiBiceps className="strong-icon"/>
+                                            Strong Topics
+                                        </h2>
 
-                        <h2 className="card-title">
-                            <GiBiceps className="strong-icon"/>
-                             Strong Topics
-                        </h2>
+                                        {
 
-                        {
+                                            strongTopics.map(
+                                                (
+                                                    topic,
+                                                    index
+                                                ) => (
 
-                            strongTopics.map(
-                                (
-                                    topic,
-                                    index
-                                ) => (
+                                                    <div
+                                                        className="topic-bar-card"
+                                                        key={index}
+                                                    >
 
-                                    <div
-                                        className="topic-bar-card"
-                                        key={index}
-                                    >
+                                                        <div className="topic-header">
 
-                                        <div className="topic-header">
+                                                            <span>
+                                                                {topic.topic}
+                                                            </span>
 
-                                            <span>
-                                                {topic.topic}
-                                            </span>
+                                                            <strong>
+                                                                {topic.percentage}%
+                                                            </strong>
 
-                                            <strong>
-                                                {topic.percentage}%
-                                            </strong>
+                                                        </div>
 
-                                        </div>
+                                                        <div className="progress-bar">
 
-                                        <div className="progress-bar">
+                                                            <div
+                                                                className="strong-fill"
+                                                                style={{
+                                                                    width:
+                                                                    `${topic.percentage}%`
+                                                                }}
+                                                            />
 
-                                            <div
-                                                className="strong-fill"
-                                                style={{
-                                                    width:
-                                                    `${topic.percentage}%`
-                                                }}
-                                            />
+                                                        </div>
 
-                                        </div>
+                                                    </div>
+
+                                                )
+                                            )
+                                        }
 
                                     </div>
 
                                 )
                             )
-                        }
-
-                    </div>
-
-                )}
+                            }
 
             </div>
 
             {/* RECOMMENDATIONS */}
 
             {
+                loading ? (
 
-                recommendations.length > 0 && (
+                    <div className="card skeleton-large-card"></div>
 
-                    <div className="card recommendation-card">
+                ) : (
 
-                        <h2 className="card-title">
-                            <BsLightbulb/>
-                            Recommended Problems
-                        </h2>
+                    recommendations.length > 0 && (
 
-                        <p>
 
-                            Weakest Topic :
+                                <div className="card recommendation-card">
 
-                            <strong>
+                                    <h2 className="card-title">
+                                        <BsLightbulb/>
+                                        Recommended Problems
+                                    </h2>
 
-                                {" "}
-                                {weakestTopic}
+                                    <p>
 
-                            </strong>
+                                        Weakest Topic :
 
-                        </p>
+                                        <strong>
 
-                        <div className="recommendation-grid">
+                                            {" "}
+                                            {weakestTopic}
 
-                            {
+                                        </strong>
 
-                                recommendations.map(
-                                    (
-                                        problem,
-                                        index
-                                    ) => (
-                                         
-                                         <div
-                                            className="problem-card"
-                                            key={index}
-                                        >
+                                    </p>
 
-                                            <div className="problem-top">
+                                    <div className="recommendation-grid">
 
-                                                <h3>
-                                                    {problem.name}
-                                                </h3>
+                                        {
 
-                                                <span className="problem-rating">
-                                                    {problem.difficulty}
-                                                </span>
+                                            recommendations.map(
+                                                (
+                                                    problem,
+                                                    index
+                                                ) => (
+                                                    
+                                                    <div
+                                                        className="problem-card"
+                                                        key={index}
+                                                    >
 
-                                            </div>
+                                                        <div className="problem-top">
 
-                                            <div className="problem-bottom">
+                                                            <h3>
+                                                                {problem.name}
+                                                            </h3>
 
-                                                <div className="problem-tags">
+                                                            <span className="problem-rating">
+                                                                {problem.difficulty}
+                                                            </span>
 
-                                                    <span className="tag">
-                                                        {problem.topic}
-                                                    </span>
+                                                        </div>
 
-                                                    <span className="tag">
-                                                        {problem.platform}
-                                                    </span>
+                                                        <div className="problem-bottom">
 
-                                                </div>
+                                                            <div className="problem-tags">
 
-                                                <span className="arrow">
-                                                    →
-                                                </span>
+                                                                <span className="tag">
+                                                                    {problem.topic}
+                                                                </span>
 
-                                            </div>
+                                                                <span className="tag">
+                                                                    {problem.platform}
+                                                                </span>
 
-                                        </div>
-                                    ))
-                            }
-                        </div>
-                    </div>
-                )
-            }
+                                                            </div>
+
+                                                            <span className="arrow">
+                                                                →
+                                                            </span>
+
+                                                        </div>
+
+                                                    </div>
+                                                ))
+                                        }
+                                    </div>
+                                </div>
+                            )
+                        )
+                        }
         </div>
     );
 }

@@ -2,7 +2,7 @@ const { getSubmissions } = require("../services/topicService");
 
 const fetchWeakTopics = async (req, res) => {
     try {
-
+        console.time("weak-topic");
         const handle = req.params.handle;
 
         const data = await getSubmissions(handle);

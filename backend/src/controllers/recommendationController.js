@@ -8,7 +8,7 @@ const {
 const fetchRecommendations = async (req, res) => {
 
     try {
-
+        console.time("recommendation");
         const handle = req.params.handle;
 
         const data = await getSubmissions(handle);

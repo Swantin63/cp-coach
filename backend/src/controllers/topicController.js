@@ -2,7 +2,7 @@ const { getSubmissions } =
 require("../services/topicService");
 
 const fetchTopics = async (req, res) => {
-
+    console.time("topic-controll");
     try {
 
         const handle =

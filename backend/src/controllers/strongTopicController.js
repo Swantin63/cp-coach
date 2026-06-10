@@ -2,7 +2,7 @@ const { getSubmissions } = require("../services/topicService");
 
 const fetchStrongTopics = async (req, res) => {
     try {
-
+        console.time("strong-topic");
         const handle = req.params.handle;
 
         const data = await getSubmissions(handle);
