@@ -1,0 +1,29 @@
+.dashboard-preview{
+    width:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.dashboard-card{
+    width:100%;
+    max-width:700px;
+    height:500px;
+
+    background:white;
+
+    border-radius:24px;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.08);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:24px;
+    font-weight:600;
+
+    color:#111827;
+}

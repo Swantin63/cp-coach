@@ -1,8 +1,11 @@
 import "./DashboardPreview.css";
+
 function DashboardPreview() {
     return (
         <div className="dashboard-preview">
-            Dashboard Preview
+            <div className="dashboard-card">
+                Dashboard Preview
+            </div>
         </div>
     );
 }

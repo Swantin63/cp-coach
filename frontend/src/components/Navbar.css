@@ -1,38 +1,58 @@
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 80px;
-    font-size:14px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(8,8,8,0.9);
-    backdrop-filter: blur(10px);
+.navbar{
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 0 80px;
+    background:white;
+    border-bottom:1px solid #eee;
+    max-width: 1400px;
+    margin: 0 auto;
 }
-
-.nav-link {
-    padding: 10px 16px;
-    border-radius: 8px;
-    transition: 0.3s ease;
-    cursor: pointer;
+.logo{
+    color:#111827;
+    font-weight:700;
+    fontsize: 1.5rem;
 }
-
-.nav-links div {
-    cursor: pointer;
+.nav-menu{
+    display:flex;
+    gap:40px;
+    font-weight:700;
+    color:#111827;
+    list-style:none;
 }
-
-.nav-link:hover {
-    background-color: rgba(255,255,255,0.08);
-
-    color: white;
+.nav-menu li{
+    cursor:pointer;
 }
-nav h2 {
-    cursor: pointer;
+.nav-menu li:hover {
+    color: red;
+}
+.nav-actions{
+    display:flex;
+    gap:25px;
+}
+.signin-btn{
+    background:transparent;
+    color:black;
+    font-weight:700;
+    cursor:pointer;
+    font-size:15px;
+    border:none
+}
+.signin-btn:hover{
+    color:red;
+}
+.start-btn{
+    background:#2B7B37;
+    border-radius:10px;
+    padding:10px;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    font-weight:600;
+    cursor:pointer;
     transition: 0.3s;
 }
-
-nav h2:hover {
-    color: #6674ff;
+.start-btn:hover{
+    transform: translateY(-2px);
 }
